@@ -32,8 +32,7 @@ def get_live_data_of_ag(no_cache=False):
         ag = Ag.query.order_by(Ag.id.desc()).first()
         return {
             'date': ag.date,
-            # 'time': ag.create_time.strftime('%H:%M:%S'),
-            'time': '15:00:00',
+            'time': ag.create_time.strftime('%H:%M:%S'),
             'ag_future_price': ag.ag_future_price,
             'ag_future_averge_price': ag.ag_future_averge_price,
             'ag_future_previous_settlement_price': ag.ag_future_previous_settlement_price,
