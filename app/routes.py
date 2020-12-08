@@ -8,6 +8,7 @@ from app.handler import get_live_data_of_ag
 ag_history_resource_fields = {
     'id': fields.Integer,
     'date': fields.String,
+    'time': fields.String,
     'create_time': fields.DateTime(dt_format='iso8601'),
     'update_time': fields.DateTime(dt_format='iso8601'),
     'ag_future_price': fields.Integer,

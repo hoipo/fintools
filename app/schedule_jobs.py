@@ -24,6 +24,7 @@ def save_today_data():
     if Ag.query.filter_by(date=date).first() is None:
         data = get_live_data_of_ag(no_cache=True)
         ag = Ag(date=data['date'],
+                    time=data['time'],
                     ag_future_price=data['ag_future_price'],
                     ag_future_averge_price=data['ag_future_averge_price'],
                     ag_future_previous_settlement_price=data['ag_future_previous_settlement_price'],

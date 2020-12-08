@@ -5,6 +5,7 @@ import time
 class Ag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10), unique=True)
+    time = db.Column(db.String(8))
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(
         db.DateTime, onupdate=datetime.now, default=datetime.now)
