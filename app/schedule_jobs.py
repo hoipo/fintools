@@ -74,7 +74,7 @@ schedule.every().day.at('07:01').do(save_today_data)
 schedule.every().day.at('07:30').do(save_today_data)
 
 schedule.every().hour.do(save_todays_ag_fund_net_value)
-schedule.every(15).seconds.do(save_ag_tick_data)
+schedule.every(30).seconds.do(save_ag_tick_data)
 
 
 run_continuously(schedule)
