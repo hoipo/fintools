@@ -1,9 +1,10 @@
 import schedule
 import time
 import threading
-from app import db, models
+from app import db, models, mongo_ag_tick
 from app.models import Ag
 from app.handler import get_live_data_of_ag, get_ag_fund_net_value
+
 
 
 def run_continuously(schedule, interval=1):
@@ -49,10 +50,25 @@ def save_todays_ag_fund_net_value():
     else: 
         print('今天已经更新完数据')
 
+def save_ag_tick_data():
+    """
+    记录每tick的数据
+    """
+    nowtime = time.localtime()
+    market_open_time = time.strptime('{}-{}-{} 1:30:00'.format(
+        nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
+    market_close_time = time.strptime('{}-{}-{} 7:00:00'.format(
+        nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
+    if nowtime > market_open_time and nowtime < market_close_time:
+        data = get_live_data_of_ag(no_cache=True)
+        mongo_ag_tick.insert_one(data)
+
 
 schedule.every().day.at('07:01').do(save_today_data)
 schedule.every().day.at('07:30').do(save_today_data)
+
 schedule.every().hour.do(save_todays_ag_fund_net_value)
+schedule.every(15).seconds.do(save_ag_tick_data)
 
 
 run_continuously(schedule)

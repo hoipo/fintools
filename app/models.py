@@ -2,6 +2,7 @@ from app import db
 from datetime import datetime
 import time
 
+
 class Ag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10), unique=True)
