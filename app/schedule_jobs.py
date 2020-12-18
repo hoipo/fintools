@@ -57,9 +57,15 @@ def save_ag_tick_data():
     nowtime = time.localtime()
     market_open_time = time.strptime('{}-{}-{} 1:30:00'.format(
         nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
+    middle_close_time = time.strptime('{}-{}-{} 3:30:00'.format(
+        nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
+    middle_open_time = time.strptime('{}-{}-{} 5:00:00'.format(
+        nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
     market_close_time = time.strptime('{}-{}-{} 7:00:00'.format(
         nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
-    if nowtime > market_open_time and nowtime < market_close_time:
+    market_close_time = time.strptime('{}-{}-{} 7:00:00'.format(
+        nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
+    if (nowtime > market_open_time and nowtime < middle_close_time) or (nowtime > middle_open_time and nowtime < market_close_time):
         data = get_live_data_of_ag(no_cache=True)
         mongo_ag_tick.insert_one(data)
 
