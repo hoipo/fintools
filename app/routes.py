@@ -3,7 +3,8 @@ from app.models import Ag
 from flask_restful import Resource, fields, marshal_with, reqparse
 from flask import jsonify
 from app.utils import serialize
-from app.handler import get_live_data_of_ag
+from app.handler import get_live_data_of_ag, get_tick_data, get_tick_data_one
+from bson.json_util import dumps
 
 ag_history_resource_fields = {
     'id': fields.Integer,
@@ -36,3 +37,27 @@ class _get_ag_history(Resource):
         return [serialize(i) for i in l]
 
 api.add_resource(_get_ag_history, '/api/get_ag_history')
+
+
+class _get_tick_data(Resource):    
+    # @marshal_with(tick_data_fields)
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('date', type=str)
+        parser.add_argument('limit', type=str)
+        date = parser.parse_args().date
+        limit = parser.parse_args().limit
+        lst = get_tick_data(date=date, limit=limit)
+        return jsonify(lst)
+
+
+api.add_resource(_get_tick_data, '/api/get_tick_data')
+
+class _get_tick_data_one(Resource):    
+    # @marshal_with(tick_data_fields)
+    def get(self):
+        lst = get_tick_data_one()
+        return jsonify(lst)
+
+
+api.add_resource(_get_tick_data_one, '/api/get_tick_data_one')
