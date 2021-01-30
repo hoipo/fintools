@@ -4,7 +4,6 @@ import threading
 from app import db, models, mongo_ag_tick
 from app.models import Ag
 from app.handler import get_live_data_of_ag, get_ag_fund_net_value, get_tick_data_one
-from 
 
 
 
@@ -70,9 +69,9 @@ def save_ag_tick_data():
         data = get_live_data_of_ag(no_cache=True)
         print('1' + data.time)
         print('2' + get_tick_data_one().time)
-        if(data.time != get_tick_data_one().time) {
+        if data.time != get_tick_data_one().time:
             mongo_ag_tick.insert_one(data)
-        }
+        
 
 
 schedule.every().day.at('07:01').do(save_today_data)
