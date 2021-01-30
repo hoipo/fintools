@@ -85,7 +85,6 @@ def get_tick_data(date=None, limit=None):
             "ag_fund_previous_net_value": x["ag_fund_previous_net_value"]
             })
     if len(result) == 0:
-        print('list is None')
         if date is not None:
             y, m, d = date.split('-')
             today = datetime.date(int(y), int(m), int(d))
