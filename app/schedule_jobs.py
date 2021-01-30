@@ -3,7 +3,8 @@ import time
 import threading
 from app import db, models, mongo_ag_tick
 from app.models import Ag
-from app.handler import get_live_data_of_ag, get_ag_fund_net_value
+from app.handler import get_live_data_of_ag, get_ag_fund_net_value, get_tick_data_one
+from 
 
 
 
@@ -67,7 +68,11 @@ def save_ag_tick_data():
         nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
     if (nowtime > market_open_time and nowtime < middle_close_time) or (nowtime > middle_open_time and nowtime < market_close_time):
         data = get_live_data_of_ag(no_cache=True)
-        mongo_ag_tick.insert_one(data)
+        print('1' + data.time)
+        print('2' + get_tick_data_one().time)
+        if(data.time != get_tick_data_one().time) {
+            mongo_ag_tick.insert_one(data)
+        }
 
 
 schedule.every().day.at('07:01').do(save_today_data)
