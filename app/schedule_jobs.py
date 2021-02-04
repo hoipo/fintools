@@ -1,5 +1,6 @@
 import schedule
 import time
+import datetime
 import threading
 from app import db, models, mongo_ag_tick
 from app.models import Ag
@@ -35,6 +36,18 @@ def save_today_data():
         db.session.add(ag)
         db.session.commit()
         print('已保存到数据库')
+
+
+def save_ag_fund_cap():
+    item = Ag.query.order_by(Ag.id.desc()).first()
+    if item.ag_fund_cap == '-' or item.ag_fund_cap is None:
+        cap = get_ag_fund_cap()
+        if cap['ag_fund_cap_date'] == datetime.date.today().strftime('%Y-%m-%d'):
+            item.ag_fund_cap = cap['ag_fund_cap']
+            db.session.commit()
+            print('已经更新基金规模')
+        else:
+            print('还没更新基金规模')
 
 
 def save_todays_ag_fund_net_value():
@@ -77,6 +90,7 @@ schedule.every().day.at('07:30').do(save_today_data)
 
 schedule.every().hour.do(save_todays_ag_fund_net_value)
 schedule.every(30).seconds.do(save_ag_tick_data)
+schedule.every(30).minutes.do(save_ag_fund_cap)
 
 
 run_continuously(schedule)
