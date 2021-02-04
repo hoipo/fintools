@@ -18,6 +18,7 @@ ag_history_resource_fields = {
     'ag_fund_price': fields.Float,
     'ag_fund_previous_net_value': fields.Float,
     'ag_fund_net_value': fields.Float,
+    'ag_fund_cap': fields.String,
 }
 
 class _get_live_data_of_ag(Resource):
@@ -53,7 +54,7 @@ class _get_tick_data(Resource):
 
 api.add_resource(_get_tick_data, '/api/get_tick_data')
 
-class _get_tick_data_one(Resource):    
+class _get_tick_data_one(Resource):
     # @marshal_with(tick_data_fields)
     def get(self):
         lst = get_tick_data_one()

@@ -5,6 +5,7 @@ import datetime
 from app.models import Ag
 from app import mongo_ag_tick
 import pymongo
+from random import random
 
 def get_live_data_of_ag(no_cache=False):
     nowtime = time.localtime()
@@ -50,6 +51,26 @@ def get_ag_fund_net_value():
         'ag_fund_price': ag_fund[1],
         'ag_fund_previous_net_value': ag_fund[3],
         'date': ag_fund[4],
+    }
+
+
+def get_ag_fund_cap():
+    cap = requests.get('http://www.szse.cn/api/report/ShowReport/data?SHOWTYPE=JSON&CATALOGID=1945_LOF&txtQueryKeyAndJC=161226&random={}'.format(
+        random()), headers={'Host': 'www.szse.cn',
+                            'Connection': 'keep-alive',
+                            'Pragma': 'no-cache',
+                            'Cache-Control': 'no-cache',
+                            'Accept': 'application/json, text/javascript, */*; q=0.01',
+                            'X-Request-Type': 'ajax',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36',
+                            'Content-Type': 'application/json',
+                            'Referer': 'http://www.szse.cn/market/product/list/lofFundList/index.html',
+                            'Accept-Encoding': 'gzip, deflate',
+                            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7'}).json()
+    return {
+        'ag_fund_cap': cap[0]['data'][0]['dqgm'],
+        'ag_fund_cap_date': cap[0]['metadata']['subname']
     }
 
 def get_tick_data_one():

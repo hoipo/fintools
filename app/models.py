@@ -16,6 +16,8 @@ class Ag(db.Model):
     ag_fund_price = db.Column(db.Float)
     ag_fund_previous_net_value = db.Column(db.Float)
     ag_fund_net_value = db.Column(db.Float, default=0.0)
+    ag_fund_cap = db.Column(db.String(20), default='-')
+    ag_fund_cap_date = db.Column(db.String(10), default='-')
 
     def update_ag_fund_net_value(self, net_value):
         self.ag_fund_net_value = net_value
