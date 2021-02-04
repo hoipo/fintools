@@ -7,7 +7,7 @@ import pymongo
 
 app = Flask(__name__, static_folder='../static', static_url_path='')
 
-ENV = ""
+ENV = "debug"
 
 if ENV == "debug":
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:123456@localhost:5432/postgres'

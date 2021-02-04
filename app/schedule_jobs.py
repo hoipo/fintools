@@ -24,7 +24,6 @@ def save_today_data():
     date = time.strftime("%Y-%m-%d", time.localtime())
     if Ag.query.filter_by(date=date).first() is None:
         data = get_live_data_of_ag(no_cache=True)
-        cap = get_ag_fund_cap()
         ag = Ag(date=data['date'],
                     time=data['time'],
                     ag_future_price=data['ag_future_price'],
@@ -32,8 +31,6 @@ def save_today_data():
                     ag_future_previous_settlement_price=data['ag_future_previous_settlement_price'],
                     ag_fund_price=data['ag_fund_price'],
                     ag_fund_previous_net_value=data['ag_fund_previous_net_value'],
-                ag_fund_cap=cap['ag_fund_cap'],
-                ag_fund_cap_date=cap['ag_fund_cap_date']
                     )
         db.session.add(ag)
         db.session.commit()
