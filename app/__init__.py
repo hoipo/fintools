@@ -7,7 +7,7 @@ import pymongo
 
 app = Flask(__name__, static_folder='../static', static_url_path='')
 
-ENV = ""
+ENV = "debug"
 
 if ENV == "debug":
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:123456@localhost:5432/postgres'
@@ -18,6 +18,7 @@ else:
     app.debug = False
 
 mongo_ag_tick = pymongo.MongoClient(os.getenv('MONGODB_URL'))["ag"]["ag_tick"]
+mongo_faster_ag_tick = pymongo.MongoClient(os.getenv('MONGODB_FASTER_URL'))["temp"]["agreal"]
 
 @ app.route('/')
 def index():
