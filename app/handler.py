@@ -10,7 +10,7 @@ from random import random
 def get_live_data_of_ag(no_cache=False):
     nowtime = time.localtime()
     market_open_time = time.strptime('{}-{}-{} 1:00:00'.format(nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
-    market_close_time = time.strptime('{}-{}-{} 8:01:00'.format(
+    market_close_time = time.strptime('{}-{}-{} 7:01:00'.format(
         nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
     if no_cache or (time.localtime() > market_open_time and time.localtime() < market_close_time):
         faster_data = __get_faster_ag_live_data() #现请求毫秒级数据
@@ -23,8 +23,6 @@ def get_live_data_of_ag(no_cache=False):
         ag_fund_price = ag_fund[0].split('=')[1].split(',')[3]  # 白银基金现价
         # 白银基金净值time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         ag_fund_net_value = ag_fund[1].split('=')[1].split(',')[1]
-        print(faster_data["time"])
-        print(ag_fund[0].split('=')[1].split(',')[-2])
         if (datetime.strptime(faster_data["date"] + ' ' + faster_data["time"], "%Y-%m-%d %H:%M:%S") > datetime.strptime(ag_fund[0].split('=')[1].split(',')[-3] + ' ' + ag_fund[0].split('=')[1].split(',')[-2], "%Y-%m-%d %H:%M:%S")):
             return {
                 'date': faster_data["date"],
