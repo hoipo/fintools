@@ -1,7 +1,7 @@
 import requests
 import time
 import math
-import datetime
+from datetime import datetime, timedelta, timezone
 from app.models import Ag
 from app import mongo_ag_tick, mongo_faster_ag_tick
 import pymongo
@@ -13,6 +13,7 @@ def get_live_data_of_ag(no_cache=False):
     market_close_time = time.strptime('{}-{}-{} 7:01:00'.format(
         nowtime.tm_year, nowtime.tm_mon, nowtime.tm_mday), '%Y-%m-%d %H:%M:%S')
     if no_cache or (time.localtime() > market_open_time and time.localtime() < market_close_time):
+    # if True:
         faster_data = __get_faster_ag_live_data() #现请求毫秒级数据
         # fetch the price of AG future
         ag_future_price = requests.get('https://hq.sinajs.cn/?_={}&list=nf_AG0'.format(
@@ -23,20 +24,9 @@ def get_live_data_of_ag(no_cache=False):
         ag_fund_price = ag_fund[0].split('=')[1].split(',')[3]  # 白银基金现价
         # 白银基金净值time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         ag_fund_net_value = ag_fund[1].split('=')[1].split(',')[1]
-        print(faster_data)
+        print(faster_data["time"])
         print(ag_fund[0].split('=')[1].split(',')[-2])
-        if (datetime.datetime.strptime(faster_data["date"] + ' ' + faster_data["time"], "%Y-%m-%d %H:%M:%S") > datetime.datetime.strptime(ag_fund[0].split('=')[1].split(',')[-3] + ' ' + ag_fund[0].split('=')[1].split(',')[-2], "%Y-%m-%d %H:%M:%S")):
-            return {
-                'date': ag_fund[0].split('=')[1].split(',')[-3],
-                'time': ag_fund[0].split('=')[1].split(',')[-2],
-                'ag_future_price': round(float(ag_future_price[8])),
-                'ag_future_averge_price': round(float(ag_future_price[-1])),
-                'ag_future_previous_settlement_price': round(float(ag_future_price[10])),
-                'ag_fund_price': float(ag_fund_price),
-                'ag_fund_previous_net_value': float(ag_fund_net_value),
-                'is_faster_data': True
-            }
-        else:
+        if (datetime.strptime(faster_data["date"] + ' ' + faster_data["time"], "%Y-%m-%d %H:%M:%S") > datetime.strptime(ag_fund[0].split('=')[1].split(',')[-3] + ' ' + ag_fund[0].split('=')[1].split(',')[-2], "%Y-%m-%d %H:%M:%S")):
             return {
                 'date': faster_data["date"],
                 'time': faster_data["time"],
@@ -45,8 +35,20 @@ def get_live_data_of_ag(no_cache=False):
                 'ag_future_previous_settlement_price': round(float(ag_future_price[10])),
                 'ag_fund_price': faster_data["ag_fund_price"],
                 'ag_fund_previous_net_value': float(ag_fund_net_value),
+                'is_faster_data': True
+            }
+        else:
+            return {
+                'date': ag_fund[0].split('=')[1].split(',')[-3],
+                'time': ag_fund[0].split('=')[1].split(',')[-2],
+                'ag_future_price': round(float(ag_future_price[8])),
+                'ag_future_averge_price': round(float(ag_future_price[-1])),
+                'ag_future_previous_settlement_price': round(float(ag_future_price[10])),
+                'ag_fund_price': float(ag_fund_price),
+                'ag_fund_previous_net_value': float(ag_fund_net_value),
                 'is_faster_data': False
             }
+            
     else:
         ag = Ag.query.order_by(Ag.id.desc()).first()
         return {
@@ -62,10 +64,10 @@ def get_live_data_of_ag(no_cache=False):
 
 def __get_faster_ag_live_data():
     faster_tick_data = mongo_faster_ag_tick.find_one(sort=[('_id', pymongo.DESCENDING)])
-    dt = time.localtime(int(str(faster_tick_data["dataTime"])[:10]))
+    dt = datetime.fromtimestamp(int(str(faster_tick_data["dataTime"])[:10])).replace(tzinfo=timezone.utc).astimezone(timezone(timedelta(hours=8)))
     return {
-        'date': time.strftime("%Y-%m-%d", dt),
-        'time': time.strftime("%H:%M:%S", dt),
+        'date': dt.strftime("%Y-%m-%d"),
+        'time': dt.strftime("%H:%M:%S"),
         'ag_future_price': faster_tick_data["agFuturePrice"],
         'ag_future_averge_price': faster_tick_data["agFutureAveragePrice"],
         'ag_fund_price': faster_tick_data["agFundPrice"],
