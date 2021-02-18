@@ -23,6 +23,8 @@ def get_live_data_of_ag(no_cache=False):
         ag_fund_price = ag_fund[0].split('=')[1].split(',')[3]  # 白银基金现价
         # 白银基金净值time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         ag_fund_net_value = ag_fund[1].split('=')[1].split(',')[1]
+        print(faster_data["time"])
+        print(ag_fund[0].split('=')[1].split(',')[-2])
         if (datetime.strptime(faster_data["date"] + ' ' + faster_data["time"], "%Y-%m-%d %H:%M:%S") > datetime.strptime(ag_fund[0].split('=')[1].split(',')[-3] + ' ' + ag_fund[0].split('=')[1].split(',')[-2], "%Y-%m-%d %H:%M:%S")):
             return {
                 'date': faster_data["date"],
