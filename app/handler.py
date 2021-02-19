@@ -1,7 +1,7 @@
 import requests
 import time
 import math
-from datetime import datetime, timedelta, timezone, date
+from datetime import datetime, timedelta, timezone, date as date_from_datetime
 from app.models import Ag
 from app import mongo_ag_tick, mongo_faster_ag_tick
 import pymongo
@@ -132,11 +132,11 @@ def get_tick_data(date=None, limit=None):
             "ag_fund_previous_net_value": x["ag_fund_previous_net_value"]
             })
     if len(result) == 0:
-        if datee is not None:
-            y, m, d = datee.split('-')
-            today = date(int(y), int(m), int(d))
+        if date is not None:
+            y, m, d = date.split('-')
+            today = date_from_datetime(int(y), int(m), int(d))
         else:
-            today = date.today()
+            today = date_from_datetime.today()
         yesterday = today - timedelta(days=1)
         return get_tick_data(date='{}-{}-{}'.format(yesterday.year, yesterday.month, yesterday.day))
     return result
