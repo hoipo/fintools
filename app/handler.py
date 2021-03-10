@@ -65,8 +65,8 @@ def __get_faster_ag_live_data():
     return {
         'date': dt.strftime("%Y-%m-%d"),
         'time': dt.strftime("%H:%M:%S"),
-        'ag_future_price': faster_tick_data["agFuturePrice"],
-        'ag_future_averge_price': faster_tick_data["agFutureAveragePrice"],
+        'ag_future_price': round(faster_tick_data["agFuturePrice"]),
+        'ag_future_averge_price': round(faster_tick_data["agFutureAveragePrice"]),
         'ag_fund_price': faster_tick_data["agFundPrice"],
     }
 
